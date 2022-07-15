@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysGuestMapper">
+    
+    <resultMap type="SysGuest" id="SysGuestResult">
+        <result property="guestId"    column="guest_id"    />
+        <result property="guestName"    column="guest_name"    />
+        <result property="guestPhoneNumber"    column="guest_phone_number"    />
+        <result property="guestTime"    column="guest_time"    />
+        <result property="guestExplain"    column="guest_explain"    />
+        <result property="guestDept"    column="guest_dept"    />
+        <result property="guestRoom"    column="guest_room"    />
+    </resultMap>
+
+    <sql id="selectSysGuestVo">
+        select guest_id, guest_name, guest_phone_number, guest_time, guest_explain, guest_dept, guest_room from sys_guest
+    </sql>
+
+    <select id="selectSysGuestList" parameterType="SysGuest" resultMap="SysGuestResult">
+        <include refid="selectSysGuestVo"/>
+        <where>  
+            <if test="guestName != null  and guestName != ''"> and guest_name like concat('%', #{guestName}, '%')</if>
+            <if test="guestPhoneNumber != null  and guestPhoneNumber != ''"> and guest_phone_number = #{guestPhoneNumber}</if>
+            <if test="guestTime != null "> and guest_time = #{guestTime}</if>
+            <if test="guestExplain != null  and guestExplain != ''"> and guest_explain = #{guestExplain}</if>
+            <if test="guestDept != null  and guestDept != ''"> and guest_dept = #{guestDept}</if>
+            <if test="guestRoom != null "> and guest_room = #{guestRoom}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysGuestByGuestId" parameterType="Long" resultMap="SysGuestResult">
+        <include refid="selectSysGuestVo"/>
+        where guest_id = #{guestId}
+    </select>
+        
+    <insert id="insertSysGuest" parameterType="SysGuest" useGeneratedKeys="true" keyProperty="guestId">
+        insert into sys_guest
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="guestName != null">guest_name,</if>
+            <if test="guestPhoneNumber != null">guest_phone_number,</if>
+            <if test="guestTime != null">guest_time,</if>
+            <if test="guestExplain != null">guest_explain,</if>
+            <if test="guestDept != null">guest_dept,</if>
+            <if test="guestRoom != null">guest_room,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="guestName != null">#{guestName},</if>
+            <if test="guestPhoneNumber != null">#{guestPhoneNumber},</if>
+            <if test="guestTime != null">#{guestTime},</if>
+            <if test="guestExplain != null">#{guestExplain},</if>
+            <if test="guestDept != null">#{guestDept},</if>
+            <if test="guestRoom != null">#{guestRoom},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysGuest" parameterType="SysGuest">
+        update sys_guest
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="guestName != null">guest_name = #{guestName},</if>
+            <if test="guestPhoneNumber != null">guest_phone_number = #{guestPhoneNumber},</if>
+            <if test="guestTime != null">guest_time = #{guestTime},</if>
+            <if test="guestExplain != null">guest_explain = #{guestExplain},</if>
+            <if test="guestDept != null">guest_dept = #{guestDept},</if>
+            <if test="guestRoom != null">guest_room = #{guestRoom},</if>
+        </trim>
+        where guest_id = #{guestId}
+    </update>
+
+    <delete id="deleteSysGuestByGuestId" parameterType="Long">
+        delete from sys_guest where guest_id = #{guestId}
+    </delete>
+
+    <delete id="deleteSysGuestByGuestIds" parameterType="String">
+        delete from sys_guest where guest_id in 
+        <foreach item="guestId" collection="array" open="(" separator="," close=")">
+            #{guestId}
+        </foreach>
+    </delete>
+</mapper>

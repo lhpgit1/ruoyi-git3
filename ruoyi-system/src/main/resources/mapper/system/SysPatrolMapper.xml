@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysPatrolMapper">
+    
+    <resultMap type="SysPatrol" id="SysPatrolResult">
+        <result property="patrolId"    column="patrol_id"    />
+        <result property="patrolStaffId"    column="patrol_staff_id"    />
+        <result property="patrolName"    column="patrol_name"    />
+        <result property="patrolTime"    column="patrol_time"    />
+        <result property="patrolDept"    column="patrol_dept"    />
+        <result property="patrolMatter"    column="patrol_matter"    />
+        <result property="patrolPhoneNumber"    column="patrol_phone_number"    />
+    </resultMap>
+
+    <sql id="selectSysPatrolVo">
+        select patrol_id, patrol_staff_id, patrol_name, patrol_time, patrol_dept, patrol_matter, patrol_phone_number from sys_patrol
+    </sql>
+
+    <select id="selectSysPatrolList" parameterType="SysPatrol" resultMap="SysPatrolResult">
+        <include refid="selectSysPatrolVo"/>
+        <where>  
+            <if test="patrolStaffId != null "> and patrol_staff_id = #{patrolStaffId}</if>
+            <if test="patrolName != null  and patrolName != ''"> and patrol_name like concat('%', #{patrolName}, '%')</if>
+            <if test="patrolTime != null "> and patrol_time = #{patrolTime}</if>
+            <if test="patrolDept != null  and patrolDept != ''"> and patrol_dept = #{patrolDept}</if>
+            <if test="patrolMatter != null  and patrolMatter != ''"> and patrol_matter like concat('%', #{patrolMatter}, '%')</if>
+            <if test="patrolPhoneNumber != null  and patrolPhoneNumber != ''"> and patrol_phone_number = #{patrolPhoneNumber}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysPatrolByPatrolId" parameterType="Long" resultMap="SysPatrolResult">
+        <include refid="selectSysPatrolVo"/>
+        where patrol_id = #{patrolId}
+    </select>
+        
+    <insert id="insertSysPatrol" parameterType="SysPatrol" useGeneratedKeys="true" keyProperty="patrolId">
+        insert into sys_patrol
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="patrolStaffId != null">patrol_staff_id,</if>
+            <if test="patrolName != null and patrolName != ''">patrol_name,</if>
+            <if test="patrolTime != null">patrol_time,</if>
+            <if test="patrolDept != null and patrolDept != ''">patrol_dept,</if>
+            <if test="patrolMatter != null">patrol_matter,</if>
+            <if test="patrolPhoneNumber != null">patrol_phone_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="patrolStaffId != null">#{patrolStaffId},</if>
+            <if test="patrolName != null and patrolName != ''">#{patrolName},</if>
+            <if test="patrolTime != null">#{patrolTime},</if>
+            <if test="patrolDept != null and patrolDept != ''">#{patrolDept},</if>
+            <if test="patrolMatter != null">#{patrolMatter},</if>
+            <if test="patrolPhoneNumber != null">#{patrolPhoneNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysPatrol" parameterType="SysPatrol">
+        update sys_patrol
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="patrolStaffId != null">patrol_staff_id = #{patrolStaffId},</if>
+            <if test="patrolName != null and patrolName != ''">patrol_name = #{patrolName},</if>
+            <if test="patrolTime != null">patrol_time = #{patrolTime},</if>
+            <if test="patrolDept != null and patrolDept != ''">patrol_dept = #{patrolDept},</if>
+            <if test="patrolMatter != null">patrol_matter = #{patrolMatter},</if>
+            <if test="patrolPhoneNumber != null">patrol_phone_number = #{patrolPhoneNumber},</if>
+        </trim>
+        where patrol_id = #{patrolId}
+    </update>
+
+    <delete id="deleteSysPatrolByPatrolId" parameterType="Long">
+        delete from sys_patrol where patrol_id = #{patrolId}
+    </delete>
+
+    <delete id="deleteSysPatrolByPatrolIds" parameterType="String">
+        delete from sys_patrol where patrol_id in 
+        <foreach item="patrolId" collection="array" open="(" separator="," close=")">
+            #{patrolId}
+        </foreach>
+    </delete>
+</mapper>

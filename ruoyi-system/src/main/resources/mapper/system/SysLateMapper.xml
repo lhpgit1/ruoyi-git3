@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysLateMapper">
+    
+    <resultMap type="SysLate" id="SysLateResult">
+        <result property="lateId"    column="late_id"    />
+        <result property="lateStuId"    column="late_stu_id"    />
+        <result property="lateStuName"    column="late_stu_name"    />
+        <result property="lateReason"    column="late_reason"    />
+        <result property="lateDeptName"    column="late_dept_name"    />
+        <result property="lateRoomId"    column="late_room_id"    />
+        <result property="lateDate"    column="late_date"    />
+    </resultMap>
+
+    <sql id="selectSysLateVo">
+        select late_id, late_stu_id, late_stu_name, late_reason, late_dept_name, late_room_id, late_date from sys_late
+    </sql>
+
+    <select id="selectSysLateList" parameterType="SysLate" resultMap="SysLateResult">
+        <include refid="selectSysLateVo"/>
+        <where>  
+            <if test="lateStuId != null "> and late_stu_id = #{lateStuId}</if>
+            <if test="lateStuName != null  and lateStuName != ''"> and late_stu_name like concat('%', #{lateStuName}, '%')</if>
+            <if test="lateReason != null  and lateReason != ''"> and late_reason like concat('%', #{lateReason}, '%')</if>
+            <if test="lateDeptName != null  and lateDeptName != ''"> and late_dept_name like concat('%', #{lateDeptName}, '%')</if>
+            <if test="lateRoomId != null "> and late_room_id = #{lateRoomId}</if>
+            <if test="lateDate != null "> and late_date = #{lateDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysLateByLateId" parameterType="Long" resultMap="SysLateResult">
+        <include refid="selectSysLateVo"/>
+        where late_id = #{lateId}
+    </select>
+        
+    <insert id="insertSysLate" parameterType="SysLate" useGeneratedKeys="true" keyProperty="lateId">
+        insert into sys_late
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="lateStuId != null">late_stu_id,</if>
+            <if test="lateStuName != null and lateStuName != ''">late_stu_name,</if>
+            <if test="lateReason != null and lateReason != ''">late_reason,</if>
+            <if test="lateDeptName != null and lateDeptName != ''">late_dept_name,</if>
+            <if test="lateRoomId != null">late_room_id,</if>
+            <if test="lateDate != null">late_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="lateStuId != null">#{lateStuId},</if>
+            <if test="lateStuName != null and lateStuName != ''">#{lateStuName},</if>
+            <if test="lateReason != null and lateReason != ''">#{lateReason},</if>
+            <if test="lateDeptName != null and lateDeptName != ''">#{lateDeptName},</if>
+            <if test="lateRoomId != null">#{lateRoomId},</if>
+            <if test="lateDate != null">#{lateDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysLate" parameterType="SysLate">
+        update sys_late
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="lateStuId != null">late_stu_id = #{lateStuId},</if>
+            <if test="lateStuName != null and lateStuName != ''">late_stu_name = #{lateStuName},</if>
+            <if test="lateReason != null and lateReason != ''">late_reason = #{lateReason},</if>
+            <if test="lateDeptName != null and lateDeptName != ''">late_dept_name = #{lateDeptName},</if>
+            <if test="lateRoomId != null">late_room_id = #{lateRoomId},</if>
+            <if test="lateDate != null">late_date = #{lateDate},</if>
+        </trim>
+        where late_id = #{lateId}
+    </update>
+
+    <delete id="deleteSysLateByLateId" parameterType="Long">
+        delete from sys_late where late_id = #{lateId}
+    </delete>
+
+    <delete id="deleteSysLateByLateIds" parameterType="String">
+        delete from sys_late where late_id in 
+        <foreach item="lateId" collection="array" open="(" separator="," close=")">
+            #{lateId}
+        </foreach>
+    </delete>
+</mapper>

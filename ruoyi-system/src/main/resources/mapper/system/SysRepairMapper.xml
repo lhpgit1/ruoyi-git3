@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysRepairMapper">
+    
+    <resultMap type="SysRepair" id="SysRepairResult">
+        <result property="repairId"    column="repair_id"    />
+        <result property="roomDept"    column="room_dept"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="roomLeader"    column="room_leader"    />
+        <result property="roomPhoneNumber"    column="room_phone_number"    />
+        <result property="comment"    column="comment"    />
+        <result property="repairDate"    column="repair_date"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectSysRepairVo">
+        select repair_id, room_dept, room_number, room_leader, room_phone_number, comment, repair_date, status from sys_repair
+    </sql>
+
+    <select id="selectSysRepairList" parameterType="SysRepair" resultMap="SysRepairResult">
+        <include refid="selectSysRepairVo"/>
+        <where>
+            <if test="repairId != null"> and repair_id = #{repairId}</if>
+            <if test="roomDept != null "> and room_dept = #{roomDept}</if>
+            <if test="roomNumber != null "> and room_number = #{roomNumber}</if>
+            <if test="roomLeader != null  and roomLeader != ''"> and room_leader = #{roomLeader}</if>
+            <if test="roomPhoneNumber != null  and roomPhoneNumber != ''"> and room_phone_number = #{roomPhoneNumber}</if>
+            <if test="comment != null  and comment != ''"> and comment = #{comment}</if>
+            <if test="repairDate != null "> and repair_date = #{repairDate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by status desc
+    </select>
+    
+    <select id="selectSysRepairByRepairId" parameterType="Long" resultMap="SysRepairResult">
+        <include refid="selectSysRepairVo"/>
+        where repair_id = #{repairId}
+    </select>
+        
+    <insert id="insertSysRepair" parameterType="SysRepair">
+        insert into sys_repair
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="repairId != null">repair_id,</if>
+            <if test="roomDept != null">room_dept,</if>
+            <if test="roomNumber != null">room_number,</if>
+            <if test="roomLeader != null">room_leader,</if>
+            <if test="roomPhoneNumber != null">room_phone_number,</if>
+            <if test="comment != null">comment,</if>
+            <if test="repairDate != null">repair_date,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="repairId != null">#{repairId},</if>
+            <if test="roomDept != null">#{roomDept},</if>
+            <if test="roomNumber != null">#{roomNumber},</if>
+            <if test="roomLeader != null">#{roomLeader},</if>
+            <if test="roomPhoneNumber != null">#{roomPhoneNumber},</if>
+            <if test="comment != null">#{comment},</if>
+            <if test="repairDate != null">#{repairDate},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysRepair" parameterType="SysRepair">
+        update sys_repair
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="roomDept != null">room_dept = #{roomDept},</if>
+            <if test="roomNumber != null">room_number = #{roomNumber},</if>
+            <if test="roomLeader != null">room_leader = #{roomLeader},</if>
+            <if test="roomPhoneNumber != null">room_phone_number = #{roomPhoneNumber},</if>
+            <if test="comment != null">comment = #{comment},</if>
+            <if test="repairDate != null">repair_date = #{repairDate},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where repair_id = #{repairId}
+    </update>
+
+    <delete id="deleteSysRepairByRepairId" parameterType="Long">
+        delete from sys_repair where repair_id = #{repairId}
+    </delete>
+
+    <delete id="deleteSysRepairByRepairIds" parameterType="String">
+        delete from sys_repair where repair_id in 
+        <foreach item="repairId" collection="array" open="(" separator="," close=")">
+            #{repairId}
+        </foreach>
+    </delete>
+</mapper>
